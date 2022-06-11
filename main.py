@@ -36,21 +36,24 @@ locale_weekdays = [{'en_US': 'Mon', 'ja_JP': '月', 'zh_TW': '一'},
                    {'en_US': 'Sat', 'ja_JP': '土', 'zh_TW': '六'},
                    {'en_US': 'Sun', 'ja_JP': '日', 'zh_TW': '日'},]
 
-weekdays = [locale_weekdays[i][args.locale] for i in range(6)]
-weekdays = [locale_weekdays[6][args.locale]] + weekdays if args.start_sunday else weekdays + [locale_weekdays[6][args.locale]]
+def generate_calendar(year=args.year, month=args.month, locale=args.locale, link_style=args.link_style, format=args.format, start_sunday=args.start_sunday):
+    weekdays = [locale_weekdays[i][locale] for i in range(6)]
+    weekdays = [locale_weekdays[6][locale]] + weekdays if start_sunday else weekdays + [locale_weekdays[6][locale]]
 
-calendar.setfirstweekday(calendar.SUNDAY if args.start_sunday else calendar.MONDAY)
-raw_calendar = calendar.monthcalendar(args.year, args.month)
+    calendar.setfirstweekday(calendar.SUNDAY if start_sunday else calendar.MONDAY)
+    raw_calendar = calendar.monthcalendar(year, month)
 
-if args.format == 'csv':
-    output = ','.join(weekdays) + '\n' + '\n'.join([','.join([linkify(day=d) if d != 0 else '' for d in w]) for w in raw_calendar])
+    if format == 'csv':
+        output = ','.join(weekdays) + '\n' + '\n'.join([','.join([linkify(year=year, month=month, day=d, style=link_style) if d != 0 else '' for d in w]) for w in raw_calendar])
 
-elif args.format == 'md':
-    full_char = True if args.locale in ['ja_JP', 'zh_TW'] else False
-    width = len(linkify(day=10))
-    output = ( '| ' + ' | '.join([day.ljust(width if not full_char else width - 1, ' ') for day in weekdays]) + ' |\n' +
-               ('| ' + '-' * width + ' ') * 7 + '|\n' + 
-               '\n'.join(['| ' + ' | '.join([linkify(day=d).ljust(width, ' ') if d != 0 else ''.ljust(width, ' ') for d in w]) + ' |' for w in raw_calendar]))
+    elif format == 'md':
+        full_char = True if locale in ['ja_JP', 'zh_TW'] else False
+        width = len(linkify(day=10))
+        output = ( '| ' + ' | '.join([day.ljust(width if not full_char else width - 1, ' ') for day in weekdays]) + ' |\n' +
+                ('| ' + '-' * width + ' ') * 7 + '|\n' + 
+                '\n'.join(['| ' + ' | '.join([linkify(year=year, month=month, day=d, style=link_style).ljust(width, ' ') if d != 0 else ''.ljust(width, ' ') for d in w]) + ' |' for w in raw_calendar]))
+
+    return output
 
 if __name__ == '__main__':
-    print(output)
+    print(generate_calendar())

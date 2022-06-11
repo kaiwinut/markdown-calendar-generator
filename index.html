@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Markdown Calendar Generator</title>
+
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-2.4.2.js"></script>
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.4.2.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.4.2.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@holoviz/panel@0.13.1/dist/panel.min.js"></script>
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+</head>
+<py-env>
+    - bokeh
+    - panel==0.13.1
+    - paths:
+        - ./main.py
+</py-env>
+<body>
+    <div id="calendar" style="white-space: pre-line"></div>
+    <py-script>
+        import panel as pn
+        from datetime import datetime
+        from main import generate_calendar
+
+        year = pn.widgets.IntSlider(start=1, end=2030, name='Year', value=datetime.today().year)
+        month = pn.widgets.IntSlider(start=1, end=12, name='Month', value=datetime.today().month)
+        locale = pn.widgets.Select(name='Locale', options=['en_US', 'ja_JP', 'zh_TW'], value='en_US')
+        start_sunday = pn.widgets.Select(name='Start Sunday', options=[True, False], value=False)
+
+        def callback(y, m, l, s):
+            return '```\n' + generate_calendar(year=y, month=m, locale=l, start_sunday=s) + '\n```'
+
+        pn.Row(
+            pn.Column('# Markdown Calendar Generator', year, month, locale, start_sunday), 
+            pn.bind(callback, year, month, locale, start_sunday)
+        ).servable(target='calendar');
+    </py-script>
+
+</body>
+</html>
