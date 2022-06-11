@@ -1,4 +1,5 @@
 # Markdown Calendar Generator
+Try the online [demo](https://kaiwinut.github.io/markdown-calendar-generator/)!
 
 ## Examples
 To get the markdown calendar of June, 2022, just run 
