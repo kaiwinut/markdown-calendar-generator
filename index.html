@@ -27,17 +27,18 @@
         from datetime import datetime
         from main import generate_calendar
 
-        year = pn.widgets.IntSlider(start=1, end=2030, name='Year', value=datetime.today().year)
+        year = pn.widgets.IntSlider(start=2000, end=2030, name='Year', value=datetime.today().year)
         month = pn.widgets.IntSlider(start=1, end=12, name='Month', value=datetime.today().month)
         locale = pn.widgets.Select(name='Locale', options=['en_US', 'ja_JP', 'zh_TW'], value='en_US')
+        link_style = pn.widgets.Select(name='Link Style', options=['%Y%m%d', '%y%m%d', '%Y-%m-%d', '%y-%m-%d'], value='%Y%m%d')
         start_sunday = pn.widgets.Select(name='Start Sunday', options=[True, False], value=False)
 
-        def callback(y, m, l, s):
-            return '```\n' + generate_calendar(year=y, month=m, locale=l, start_sunday=s) + '\n```'
+        def callback(y, m, l, s, ls):
+            return '```\n' + generate_calendar(year=y, month=m, locale=l, start_sunday=s, link_style=ls) + '\n```'
 
         pn.Row(
-            pn.Column('# Markdown Calendar Generator', year, month, locale, start_sunday), 
-            pn.bind(callback, year, month, locale, start_sunday)
+            pn.Column('# Markdown Calendar Generator', year, month, locale, start_sunday, link_style), 
+            pn.bind(callback, year, month, locale, start_sunday, link_style)
         ).servable(target='calendar');
     </py-script>
 

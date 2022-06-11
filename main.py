@@ -48,7 +48,7 @@ def generate_calendar(year=args.year, month=args.month, locale=args.locale, link
 
     elif format == 'md':
         full_char = True if locale in ['ja_JP', 'zh_TW'] else False
-        width = len(linkify(day=10))
+        width = len(linkify(year=year, month=month, day=10, style=link_style))
         output = ( '| ' + ' | '.join([day.ljust(width if not full_char else width - 1, ' ') for day in weekdays]) + ' |\n' +
                 ('| ' + '-' * width + ' ') * 7 + '|\n' + 
                 '\n'.join(['| ' + ' | '.join([linkify(year=year, month=month, day=d, style=link_style).ljust(width, ' ') if d != 0 else ''.ljust(width, ' ') for d in w]) + ' |' for w in raw_calendar]))
